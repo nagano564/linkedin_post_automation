@@ -1,8 +1,8 @@
 {
-  "run_count": 26,
-  "site_index": 3,
-  "keyword_index": 8,
-  "fsi_kw_index": 4,
+  "run_count": 28,
+  "site_index": 7,
+  "keyword_index": 17,
+  "fsi_kw_index": 1,
   "used_searches": [
     "site:techcommunity.microsoft.com Azure AI agents",
     "site:forbes.com Azure AI infrastructure",
@@ -11,7 +11,9 @@
     "site:techcommunity.microsoft.com Azure AI insurance automation",
     "site:techcommunity.microsoft.com Microsoft Purview AI governance",
     "site:techcommunity.microsoft.com Azure ExpressRoute",
-    "site:microsoft.com/en-us/microsoft-cloud/blog Azure Functions serverless"
+    "site:microsoft.com/en-us/microsoft-cloud/blog Azure Functions serverless",
+    "site:azure.microsoft.com/en-us/blog Azure API Management APIM",
+    "site:infoworld.com Microsoft AI financial services"
   ],
   "used_urls": [
     "https://azure.microsoft.com/en-us/blog/fabcon-and-sqlcon-2026-unifying-databases-and-fabric-on-a-single-data-platform/",
@@ -74,6 +76,10 @@
     "https://www.theregister.com/2026/01/06/microsoft_acquires_osmos/",
     "https://www.infoworld.com/article/4093191/azure-horizondb-microsoft-goes-big-with-postgresql.html",
     "https://www.theregister.com/software/2026/03/12/microsoft-copilot-now-boarding-your-health-information/5224943",
-    "https://learn.microsoft.com/en-us/azure/azure-functions/functions-get-started"
+    "https://learn.microsoft.com/en-us/azure/azure-functions/functions-get-started",
+    "https://www.theregister.com/2026/03/18/microsoft_fabric_latest/",
+    "https://techcommunity.microsoft.com/blog/azure-managed-redis/azure-managed-redis--azure-cosmos-db-with-cache%E2%80%91aside-a-practical-guide/4475007",
+    "https://azure.microsoft.com/en-us/blog/microsoft-named-a-leader-in-the-idc-marketscape-worldwide-api-management-2026-vendor-assessment/",
+    "https://www.infoworld.com/article/4162871/the-agentic-ai-frenzy-increases-as-more-vendors-stake-their-claims.html"
   ]
 }
