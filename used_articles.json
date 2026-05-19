@@ -1,8 +1,8 @@
 {
-  "run_count": 23,
-  "site_index": 1,
-  "keyword_index": 31,
-  "fsi_kw_index": 2,
+  "run_count": 26,
+  "site_index": 3,
+  "keyword_index": 8,
+  "fsi_kw_index": 4,
   "used_searches": [
     "site:techcommunity.microsoft.com Azure AI agents",
     "site:forbes.com Azure AI infrastructure",
@@ -10,7 +10,8 @@
     "site:infoworld.com Microsoft Purview AI governance",
     "site:techcommunity.microsoft.com Azure AI insurance automation",
     "site:techcommunity.microsoft.com Microsoft Purview AI governance",
-    "site:techcommunity.microsoft.com Azure ExpressRoute"
+    "site:techcommunity.microsoft.com Azure ExpressRoute",
+    "site:microsoft.com/en-us/microsoft-cloud/blog Azure Functions serverless"
   ],
   "used_urls": [
     "https://azure.microsoft.com/en-us/blog/fabcon-and-sqlcon-2026-unifying-databases-and-fabric-on-a-single-data-platform/",
@@ -68,6 +69,11 @@
     "https://techcommunity.microsoft.com/blog/azure-ai-foundry-blog/foundry-iq-unlocking-ubiquitous-knowledge-for-agents/4470812/replies/4506882",
     "https://learn.microsoft.com/en-us/azure/cosmos-db/",
     "https://www.microsoft.com/en-us/microsoft-365/blog/2024/09/16/microsoft-365-copilot-wave-2-pages-python-in-excel-and-agents/",
-    "https://techcommunity.microsoft.com/blog/azurenetworkingblog/expressroute-gateway-microsoft-initiated-migration/4497689"
+    "https://techcommunity.microsoft.com/blog/azurenetworkingblog/expressroute-gateway-microsoft-initiated-migration/4497689",
+    "https://learn.microsoft.com/en-us/fabric/real-time-intelligence/architectures/fraud-detection",
+    "https://www.theregister.com/2026/01/06/microsoft_acquires_osmos/",
+    "https://www.infoworld.com/article/4093191/azure-horizondb-microsoft-goes-big-with-postgresql.html",
+    "https://www.theregister.com/software/2026/03/12/microsoft-copilot-now-boarding-your-health-information/5224943",
+    "https://learn.microsoft.com/en-us/azure/azure-functions/functions-get-started"
   ]
 }

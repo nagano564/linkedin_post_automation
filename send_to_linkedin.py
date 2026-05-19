@@ -17,66 +17,62 @@ LINKEDIN_TOKEN = os.getenv("LINKEDIN_ACCESS_TOKEN")
 PERSON_URN = os.getenv("LINKEDIN_PERSON_URN")
 
 # --- Writing style definitions ---
+# Heavily optimized to feel casual, narrative, and less uniform/robotic
 STYLES = {
     1: {
-        "name": "Punchy Bullets",
+        "name": "Punchy Conversation",
         "description": (
-            "Classic LinkedIn punchy style. Bold hook line, then 3 tight bullet points "
-            "with emoji, then a CTA question. Each bullet = one powerful idea. "
-            "Feels fast and scannable."
+            "Fast, human, and easily scannable. Uses short blocks of text and sparse, "
+            "intentional spacing instead of perfectly aligned textbook bullets."
         ),
         "format": (
             "FORMAT RULES:\n"
-            "- Line 1: A bold, provocative one-liner as the hook (no emoji on this line).\n"
+            "- Line 1: A casual, strong observation or counter-intuitive thought. No emoji.\n"
             "- Blank line.\n"
-            "- 3 bullet points using → or ▸, each starting with a strong verb, max 2 lines each.\n"
-            "- Blank line.\n"
-            "- One short closing insight sentence.\n"
-            "- End with a question directed at FSI/insurance leaders.\n"
+            "- Write in short, conversational paragraphs (1-2 sentences maximum per block).\n"
+            "- Use at most 1 or 2 emojis in the entire post, and only if they feel completely natural.\n"
+            "- End with a direct question aimed at insurance and enterprise tech leaders.\n"
             "- 3-5 hashtags on the last line.\n"
-            "TONE: Sharp, confident, fast-paced."
+            "TONE: Plainspoken, sharp, practical."
         ),
     },
     2: {
         "name": "Storytelling Narrative",
         "description": (
-            "Opens with a micro-story or specific scenario (real-feeling, not generic). "
-            "Flows as short paragraphs, no bullet points. Feels human and reflective. "
-            "Ends with an insight and a soft question."
+            "Opens with an unpolished micro-story or a concrete engineering/business scenario. "
+            "Flows like a natural conversation or slack message to a peer. No bullets."
         ),
         "format": (
             "FORMAT RULES:\n"
-            "- Open with a 1-2 sentence scene or moment: 'A CTO walked into a room...' "
-            "or 'Last week, a CFO asked me...' — grounded and specific.\n"
-            "- 2-3 short paragraphs (2-3 sentences each) flowing naturally. NO bullet points.\n"
-            "- A single-sentence punchline or insight before the close.\n"
-            "- End with a soft, open question inviting conversation.\n"
+            "- Open with a 1-2 sentence real-world situation: 'Last week we were looking at...' "
+            "or 'A common issue when migration hits...' — grounded and specific.\n"
+            "- 2-3 short paragraphs flowing naturally. Absolute ban on bullet points.\n"
+            "- A single-sentence realization or takeaway before closing.\n"
+            "- End with an open-ended invitation for peer feedback.\n"
             "- 3-5 hashtags on the last line.\n"
-            "TONE: Warm, thoughtful, like a senior practitioner sharing a real lesson."
+            "TONE: Collaborative, transparent, senior practitioner voice."
         ),
     },
     3: {
-        "name": "Hot Take / Contrarian",
+        "name": "Direct Industry Take",
         "description": (
-            "Starts with a statement that challenges conventional wisdom or a popular belief "
-            "in the industry. Argues a counterintuitive point about AI or insurance tech. "
-            "Feels like a bold opinion, not a product pitch."
+            "Challenges conventional wisdom or generic industry buzzwords directly. "
+            "Argues an honest, logical point about enterprise tech architecture."
         ),
         "format": (
             "FORMAT RULES:\n"
-            "- Line 1: A counterintuitive or slightly controversial statement. "
-            "Example pattern: 'Most [X] are wrong about [Y].' or 'The real reason [X] fails is not [Y].'\n"
+            "- Line 1: A direct statement showing why a common approach fails. "
+            "Example: 'The problem with scaling architecture right now isn't the data size—it's how we model it.'\n"
             "- Blank line.\n"
-            "- 2-3 short paragraphs defending the take with specific logic. No bullet points.\n"
-            "- Acknowledge the opposing view briefly, then reaffirm.\n"
-            "- Close with a direct challenge or question to peers.\n"
+            "- 2-3 short, unpolished text sections defending the take with technical logic.\n"
+            "- Speak directly to structural reality, skipping corporate jargon.\n"
+            "- Close with a prompt asking how other teams tackle this constraint.\n"
             "- 3-5 hashtags on the last line.\n"
-            "TONE: Bold, opinionated, intellectually honest. Not arrogant — persuasive."
+            "TONE: Opinionated, intellectually honest, grounded."
         ),
     },
 }
 
-# Track last used style in session to avoid exact repeats
 _session_style_history = []
 
 
@@ -109,8 +105,7 @@ def fetch_article_text(url):
 
 def append_read_more(content: str, url: str) -> str:
     """
-    Append a 'Read more' link to the post content if a URL is provided.
-    Strips any existing 'Read more' line first so it's never duplicated.
+    Append a link to the post content if a URL is provided.
     """
     if not url:
         return content
@@ -118,112 +113,8 @@ def append_read_more(content: str, url: str) -> str:
     lines = content.splitlines()
     lines = [l for l in lines if not l.strip().lower().startswith("read more:")]
     clean = "\n".join(lines).rstrip()
-    return f"{clean}\n\nRead more: {url}"
+    return f"{clean}\n\nLink: {url}"
 
-
-# Keyword → emoji map: order matters (more specific first)
-_EMOJI_HINTS = [
-    (["fraud", "risk", "compliance", "security", "breach"],      "🔒"),
-    (["predict", "forecast", "model", "underwrite", "actuari"],  "📊"),
-    (["claim", "settlement", "payout", "adjuster"],              "📋"),
-    (["customer", "client", "policyholder", "experience"],       "🤝"),
-    (["ai", "copilot", "machine learning", "llm", "gpt"],        "🤖"),
-    (["azure", "cloud", "infrastructure", "platform"],           "☁️"),
-    (["speed", "fast", "real-time", "latency", "instant"],       "⚡"),
-    (["insight", "learn", "understand", "analys"],               "🧠"),
-    (["data", "pipeline", "ingestion", "warehouse"],             "🔍"),
-    (["growth", "scale", "revenue", "profit", "roi"],            "📈"),
-    (["bank", "fsi", "financial", "insurance", "insurer"],       "🏦"),
-    (["transform", "change", "shift", "moderniz", "reinvent"],   "🚀"),
-    (["microsoft", "@microsoft"],                                 "💼"),
-    (["idea", "solution", "answer", "strategy", "approach"],     "💡"),
-    (["global", "world", "market", "industry", "sector"],        "🌐"),
-]
-
-_FALLBACK_EMOJIS = ["💡", "🚀", "🔍", "📊", "🤝", "🧠", "⚡", "🔒"]
-
-
-def _pick_emoji_for_line(line: str) -> str | None:
-    """Return the best-fit emoji for a line based on its content, or None."""
-    lower = line.lower()
-    for keywords, emoji in _EMOJI_HINTS:
-        if any(kw in lower for kw in keywords):
-            return emoji
-    return None
-
-def enforce_emoji_count(content: str, min_e: int = 4, max_e: int = 7) -> str:
-    """
-    Distribute UNIQUE emojis throughout the post.
-    """
-    import emoji as emoji_lib
-    import random
-
-    # 1. Strip existing emojis
-    def strip_emojis(text: str) -> str:
-        return "".join(ch for ch in text if not emoji_lib.is_emoji(ch)).strip()
-
-    lines = [strip_emojis(l) for l in content.splitlines()]
-
-    # 2. Identify candidate body lines
-    def is_hashtag_line(line: str) -> bool:
-        words = line.strip().split()
-        return bool(words) and all(w.startswith("#") for w in words)
-
-    def is_read_more_line(line: str) -> bool:
-        return line.strip().lower().startswith("read more:")
-
-    candidate_indices = [
-        i for i, l in enumerate(lines)
-        if l.strip()
-        and not is_hashtag_line(l)
-        and not is_read_more_line(l)
-    ]
-
-    # 3. Initialize pools and tracking
-    assigned: dict[int, str] = {}
-    used_emojis = set()
-    
-    # Create a mutable copy of fallbacks to pull from
-    available_fallbacks = _FALLBACK_EMOJIS.copy()
-    random.shuffle(available_fallbacks)
-
-    # 4. First Pass: Specific Keyword Matches
-    scored = []
-    for i in candidate_indices:
-        suggested = _pick_emoji_for_line(lines[i])
-        scored.append((0 if suggested else 1, i, suggested))
-
-    scored.sort(key=lambda x: x[0]) # Priority matches first
-
-    for priority, i, suggested_emoji in scored:
-        if len(assigned) >= max_e:
-            break
-            
-        # If the suggested emoji is already used, or we don't have one, 
-        # we'll skip to pass 2 for this line or use a fallback
-        if suggested_emoji and suggested_emoji not in used_emojis:
-            assigned[i] = suggested_emoji
-            used_emojis.add(suggested_emoji)
-            # Remove from fallbacks if it exists there to keep the pool clean
-            if suggested_emoji in available_fallbacks:
-                available_fallbacks.remove(suggested_emoji)
-
-    # 5. Second Pass: Fill to min_e using unique fallbacks
-    remaining_candidates = [i for i in candidate_indices if i not in assigned]
-    
-    for i in remaining_candidates:
-        if len(assigned) >= min_e or not available_fallbacks:
-            break
-        
-        new_emoji = available_fallbacks.pop(0)
-        assigned[i] = new_emoji
-        used_emojis.add(new_emoji)
-
-    # 6. Reconstruct the lines
-    for i, em in assigned.items():
-        lines[i] = lines[i].rstrip() + f" {em}"
-
-    return "\n".join(lines)
 
 def manual_edit(content: str) -> str:
     """Open the post in the system's default text editor for manual editing."""
@@ -240,7 +131,6 @@ def manual_edit(content: str) -> str:
         return edited.strip()
     except Exception as e:
         print(f"⚠️ Could not open editor ({editor}): {e}")
-        print("Tip: Set your EDITOR environment variable (e.g. export EDITOR=nano)")
         return content
     finally:
         os.unlink(tmp_path)
@@ -248,56 +138,57 @@ def manual_edit(content: str) -> str:
 
 def generate_post(topic, custom_prompt=None, existing_post=None, article_context=None,
                   style: dict = None):
-    """Generates or adjusts a post using topic, prompt, style, and optional article context."""
+    """Generates or adjusts a post utilizing a sharp, human system instruction set."""
 
     context_str = f"\nARTICLE CONTEXT:\n{article_context}\n" if article_context else ""
 
+    # Humanizing System Guidelines: Blocks typical AI phrasing patterns completely
     system_instruction = (
         "You are a Cloud and AI Specialist at Microsoft, focusing on Enterprise Financial Services "
-        "Insurance Customers. "
-        "STRICT RULES:\n"
+        "and Insurance architectures.\n\n"
+        "STRICT ANTI-AI VOICE WRITING INSTRUCTIONS:\n"
+        "- Absolute ban on corporate-bot words: delve, tapestry, game-changer, landscape, foster, testament, paradigm, bespoke, utilize, reshape.\n"
+        "- Do NOT use uniform, heavily manicured multi-bullet emoji blocks. Write like a human talking to a respected industry colleague.\n"
+        "- Never start with fake profound structures like 'It's not about X, it's about Y.'\n"
+        "- Keep syntax variable. Mix short sentences with medium ones. Leave things a bit punchy and unpolished.\n"
         "- Do NOT mention real estate or being a real estate agent.\n"
-        "- Always reference @Microsoft naturally somewhere in the post body (not just in hashtags).\n"
-        "- Output ONLY the final post content. No conversational filler, no 'Here is your post', "
-        "and no labels like '---updated post---'.\n"
-        "- Do NOT add a 'Read more' line — that will be appended separately."
+        "- Always reference @Microsoft naturally within the post paragraph text.\n"
+        "- Output ONLY the final post content. No conversational introduction or labels."
     )
 
     if existing_post:
         print(f"🔄 Adjusting post based on feedback...")
         style_note = (
             f"\nThis post uses the '{style['name']}' writing style. "
-            f"Keep the same style unless the feedback explicitly asks to change it.\n"
+            f"Keep the same style unless requested otherwise.\n"
             f"Style description: {style['description']}\n"
             f"{style['format']}\n"
         ) if style else ""
 
         user_prompt = (
-            f"Here is a LinkedIn post about '{topic}':\n\n"
+            f"Here is the current LinkedIn post draft about '{topic}':\n\n"
             f"--- EXISTING POST ---\n{existing_post}\n------------------\n\n"
             f"{context_str}"
             f"{style_note}"
-            f"Please ADJUST the post according to these instructions: {custom_prompt}\n"
-            "Return ONLY the text of the new post. Do NOT include a 'Read more' line."
+            f"Please ADJUST the post text according to these instructions: {custom_prompt}\n"
+            "Make sure it sounds completely human, natural, and free of typical AI catchphrases."
         )
     else:
         style = style or STYLES[1]
         print(f"🚀 Generating post about: {topic}...")
-        print(f"   ✍️  Style: {style['name']}")
+        print(f"   ✍️ Style: {style['name']}")
 
         user_prompt = (
             f"{context_str}\n"
-            f"Write a LinkedIn post about '{topic}' for an audience of FSI and insurance "
-            f"enterprise leaders.\n\n"
+            f"Write a raw, engaging LinkedIn post about '{topic}' for an audience of financial services and insurance enterprise leaders.\n\n"
             f"WRITING STYLE: {style['name']}\n"
             f"{style['description']}\n\n"
             f"{style['format']}\n\n"
-            f"CONTENT FOCUS (apply within the style above):\n"
-            f"- Angle: Microsoft Azure AI, Copilot, or cloud transformation for insurance/FSI.\n"
-            f"- Naturally mention @Microsoft somewhere in the post body.\n"
-            f"- Hashtags must include: #Microsoft #AzureAI #Insurtech #FSI\n"
-            f"- Do NOT include a 'Read more' line — that will be appended after.\n"
-            + (f"- Additional instructions: {custom_prompt}\n" if custom_prompt else "")
+            f"CONTENT STRATEGY:\n"
+            f"- Theme: Microsoft Azure AI, Copilot engineering, or secure cloud infrastructure limits in FSI.\n"
+            f"- Ensure @Microsoft is explicitly mentioned inside the text narrative naturally.\n"
+            f"- Include hashtags: #Microsoft #AzureAI #Insurtech #FSI\n"
+            + (f"- Additional nuances to add: {custom_prompt}\n" if custom_prompt else "")
         )
 
     response = client.chat.completions.create(
@@ -306,47 +197,79 @@ def generate_post(topic, custom_prompt=None, existing_post=None, article_context
             {"role": "system", "content": system_instruction},
             {"role": "user", "content": user_prompt}
         ],
-        temperature=0.75,
+        temperature=0.72,
     )
 
     return response.choices[0].message.content.strip()
 
 
-def post_to_linkedin(content):
-    url = "https://api.linkedin.com/v2/ugcPosts"
+def trigger_linkedin_scraper_shortcut(url):
+    """
+    Forces LinkedIn's offsite sharing gateway to fetch and cache 
+    the metadata/image for a URL before the API post is executed.
+    """
+    try:
+        print(f"🔗 Triggering automated scraper shortcut for: {url}...")
+        gateway_url = f"https://www.linkedin.com/sharing/share-offsite/?url={requests.utils.quote(url)}"
+        requests.get(gateway_url, timeout=10)
+    except Exception as e:
+        print(f"⚠️ Warning: Scraper shortcut ping failed: {e}")
+
+
+def post_to_linkedin(content, source_url=None):
+    """
+    Posts to the modern LinkedIn /posts API endpoint.
+    Handles link/article object structure natively if a URL is attached.
+    """
+    # Base endpoint URL for the updated LinkedIn API engine
+    url = "https://api.linkedin.com/v2/posts"
+    
     headers = {
         "Authorization": f"Bearer {LINKEDIN_TOKEN}",
         "Content-Type": "application/json",
         "X-Restli-Protocol-Version": "2.0.0",
     }
+    
+    formatted_author = f"urn:li:person:{PERSON_URN}" if "urn:li:person:" not in PERSON_URN else PERSON_URN
+
+    # Setup the structured payload map according to whether a URL preview is required
     post_data = {
-        "author": (
-            f"urn:li:person:{PERSON_URN}"
-            if "urn:li:person:" not in PERSON_URN
-            else PERSON_URN
-        ),
-        "lifecycleState": "PUBLISHED",
-        "specificContent": {
-            "com.linkedin.ugc.ShareContent": {
-                "shareCommentary": {"text": content},
-                "shareMediaCategory": "NONE",
-            }
+        "author": formatted_author,
+        "commentary": content,
+        "visibility": "PUBLIC",
+        "distribution": {
+            "feedDistribution": "MAIN_FEED",
+            "targetEntities": [],
+            "thirdPartyDistributionChannels": []
         },
-        "visibility": {"com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC"},
+        "lifecycleState": "PUBLISHED"
     }
+
+    if source_url:
+        # Before sending, force LinkedIn's crawler to look at the URL and cache images
+        trigger_linkedin_scraper_shortcut(source_url)
+        
+        # Inject the article mapping fields required for rich snippet attachment
+        post_data["content"] = {
+            "article": {
+                "source": source_url,
+                "title": "Article Update",  # Will be dynamically overwritten by LinkedIn if OG tags pull correctly
+                "description": "Enterprise cloud insight update."
+            }
+        }
+
     res = requests.post(url, headers=headers, json=post_data)
+    
+    # LinkedIn /posts API returns 201 Created on success
     if res.status_code == 201:
-        print("\n✅ POSTED SUCCESSFULLY!")
+        print("\n✅ POSTED TO LINKEDIN SUCCESSFULLY!")
     else:
-        print(f"\n❌ FAILED: {res.status_code}\n{res.text}")
+        print(f"\n❌ FAILED TO POST: {res.status_code}\n{res.text}")
 
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: python linkedin.py 'Topic' ['Prompt'] ['URL'] [--style 1|2|3]")
-        print("\nStyles:")
-        for sid, s in STYLES.items():
-            print(f"  {sid}: {s['name']}")
         sys.exit()
 
     current_topic = sys.argv[1]
@@ -354,7 +277,6 @@ if __name__ == "__main__":
     article_url = None
     force_style_id = None
 
-    # Parse optional args
     args = sys.argv[2:]
     i = 0
     while i < len(args):
@@ -372,8 +294,6 @@ if __name__ == "__main__":
             i += 1
 
     article_text = fetch_article_text(article_url) if article_url else None
-
-    # Pick style once for this session run
     active_style = pick_style(current_topic, force_style=force_style_id)
 
     raw_content = generate_post(
@@ -383,13 +303,13 @@ if __name__ == "__main__":
         style=active_style,
     )
 
-    # Apply persistent post-processing: @Microsoft + Read more link
-    post_content = enforce_emoji_count(append_read_more(raw_content, article_url))
+    # Simple clean concatenation - no artificial emoji loops
+    post_content = append_read_more(raw_content, article_url)
 
     while True:
         print(
             "\n" + "=" * 50
-            + f"\nDRAFT POST PREVIEW  [Style: {active_style['name']}]\n"
+            + f"\nDRAFT POST PREVIEW [Style: {active_style['name']}]\n"
             + "=" * 50
             + f"\n{post_content}\n"
             + "=" * 50
@@ -403,11 +323,8 @@ if __name__ == "__main__":
         choice = input("\nSelect (1-5): ").strip()
 
         if choice == "1":
-            feedback = input(
-                "\nWhat should I change? (e.g. 'shorter', 'more professional'): "
-            ).strip()
+            feedback = input("\nWhat should I change?: ").strip()
             if feedback:
-                # Allow inline URL swap in feedback
                 if "http" in feedback:
                     parts = feedback.split()
                     new_url = next((p for p in parts if p.startswith("http")), None)
@@ -416,10 +333,9 @@ if __name__ == "__main__":
                         article_text = fetch_article_text(article_url)
                         feedback = feedback.replace(new_url, "(using new article context)")
 
-                # Strip the Read more line before sending to the model so it doesn't echo it back
                 post_without_link = "\n".join(
                     l for l in post_content.splitlines()
-                    if not l.strip().lower().startswith("read more:")
+                    if not l.strip().lower().startswith("link:")
                 ).rstrip()
 
                 raw_content = generate_post(
@@ -429,7 +345,7 @@ if __name__ == "__main__":
                     article_context=article_text,
                     style=active_style,
                 )
-                post_content = enforce_emoji_count(append_read_more(raw_content, article_url))
+                post_content = append_read_more(raw_content, article_url)
             continue
 
         elif choice == "2":
@@ -437,45 +353,35 @@ if __name__ == "__main__":
             for sid, s in STYLES.items():
                 marker = " ← current" if s["name"] == active_style["name"] else ""
                 print(f"  {sid}: {s['name']}{marker}")
-            style_pick = input("Style number (or Enter to rotate): ").strip()
+            style_pick = input("Style number: ").strip()
             if style_pick.isdigit() and int(style_pick) in STYLES:
                 active_style = STYLES[int(style_pick)]
-            else:
-                current_ids = list(STYLES.keys())
-                current_idx = current_ids.index(
-                    next(k for k, v in STYLES.items() if v["name"] == active_style["name"])
-                )
-                active_style = STYLES[current_ids[(current_idx + 1) % len(current_ids)]]
-
+                
             raw_content = generate_post(
                 current_topic,
                 current_instr,
                 article_context=article_text,
                 style=active_style,
             )
-            post_content = enforce_emoji_count(append_read_more(raw_content, article_url))
+            post_content = append_read_more(raw_content, article_url)
             continue
 
         elif choice == "3":
-            print("\n📝 Opening draft in editor... (save and close to return)")
+            print("\n📝 Opening draft in editor...")
             edited = manual_edit(post_content)
             if edited != post_content:
                 post_content = edited
-                print("✅ Draft updated with your edits.")
-            else:
-                print("No changes detected.")
+                print("✅ Draft updated.")
             continue
 
         elif choice == "4":
             confirm = input("Confirm publish to LinkedIn? (y/n): ").lower().strip()
             if confirm == "y":
-                post_to_linkedin(post_content)
+                # Passes the article_url forward down to the updated /posts payload function
+                post_to_linkedin(post_content, source_url=article_url)
                 break
             continue
 
         elif choice == "5":
             print("Post discarded.")
             break
-
-        else:
-            print("Invalid selection. Choose 1-5.")
