@@ -3,7 +3,7 @@ An automated Python tool designed to discover relevant articles, track history t
 
 ## 📁 Project Structure
 * `linkedin.py` - Core automation script for posting and interacting with LinkedIn.
-* `discover.py` - Script for sourcing and filtering new content or articles.
+* `find_url.py` - Script for sourcing and filtering new content or articles.
 * `used_articles.json` - Local database tracking previously processed content.
 * `.gitignore` - Safeguards private credentials (`.env`) from public tracking.
 
@@ -74,21 +74,52 @@ Your `PERSON_URN` is your LinkedIn member ID in the format `urn:li:person:XXXXXX
 
 ## ▶️ Running the App
 
-1. Open your terminal and navigate to the project folder.
+### cd into the folder directory and then 
 
-2. Run the discovery script:
-   ```bash
-   python discover.py
-   ```
+### Step 1 — Discover an article
+```bash
+python find_url.py
+```
+The script searches for a recent, relevant Microsoft Azure article, validates it, and automatically copies a ready-to-run command to your clipboard.
 
-3. The script will generate a command and copy it to your clipboard automatically.
+### Step 2 — Generate your post
+python find_url will copy a command into your clipboard
 
-4. Paste the copied command into your terminal and press **Enter**:
-   ```bash
-   # Just press Cmd+V (Mac) or Ctrl+V (Windows/Linux) and hit Enter
-   ```
+Paste the copied command into your terminal and press **Enter** (Cmd+V on Mac, Ctrl+V on Windows/Linux):
+```bash
+python send_to_linkedin.py "Article Topic" "Your prompt instructions" "https://article-url.com"
+```
+The AI will read the article and generate a LinkedIn post in one of three writing styles.
 
-5. Follow the on-screen prompts — and you're good to go! ✅
+### Step 3 — Review and refine
+Once the draft appears, you'll see a menu with five options:
+
+```
+1) Adjustment Prompt (Refine this draft)
+2) Try a different style
+3) Manually edit this draft
+4) Send to LinkedIn
+5) Cancel
+```
+
+**Option 1 — Adjustment Prompt:** Type natural language feedback to refine the draft. For example:
+- `"Make it shorter"`
+- `"More professional tone"`
+- `"Focus more on cost savings"`
+
+The post is regenerated instantly using your feedback.
+
+**Option 2 — Try a different style:** Switch between three AI writing styles:
+- **Punchy Bullets** — Fast, scannable, hook + bullet points + CTA
+- **Storytelling Narrative** — Human, reflective, flows as short paragraphs
+- **Hot Take / Contrarian** — Bold opinion, challenges conventional wisdom
+
+**Option 3 — Manually edit this draft:** Opens the post in your terminal's text editor (defaults to `nano`). Make any changes you like, save, and close to return to the menu.
+
+> 💡 To use a different editor, set the `EDITOR` environment variable: `export EDITOR=vim`
+
+**Option 4 — Send to LinkedIn:** Publishes the post directly to your LinkedIn profile. You'll be asked to confirm before anything goes live.
+
+**Option 5 — Cancel:** Discards the draft without posting.
 
 ---
-
