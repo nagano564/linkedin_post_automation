@@ -380,7 +380,7 @@ def build_linkedin_command(topic: str, url: str) -> str:
         f"Create a short LinkedIn post with emojis. Focus on enterprise value "
         f"regarding {topic}. End the post with 'read more: {url}'"
     )
-    return f'python linkedin.py "{topic}" "{static_prompt}" "{url}"'
+    return f'python send_to_linkedin.py "{topic}" "{static_prompt}" "{url}"'
 
 
 # -- Terminal utilities --------------------------------------------------------
